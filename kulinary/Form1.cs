@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.Data.Entity;
 using System.IO;
+using System.Globalization;
 
 namespace kulinary
 {
@@ -102,7 +103,7 @@ namespace kulinary
                     {
                         // Правильная передача значений
                         command.Parameters.AddWithValue("@Name", userText);
-                        command.Parameters.AddWithValue("@Date", selectedDate);
+                        command.Parameters.AddWithValue("@Date", selectedDate.ToString("yyyy-MM-dd"));
                         command.Parameters.AddWithValue("@Text", textValue);
 
                         // Если Photo - это путь к изображению
@@ -162,7 +163,9 @@ namespace kulinary
                             {
                                 Id = Convert.ToInt32(reader["Id"]),
                                 Name = reader["Name"].ToString(),
-                                Date = Convert.ToDateTime(reader["Date"]),
+                                Date = reader["Date"] != DBNull.Value ?
+       DateTime.ParseExact(reader["Date"].ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture) :
+       DateTime.MinValue,
                                 Text = reader["Text"].ToString(),
                                 Photo = reader["Photo"].ToString()
                             });
